@@ -7,7 +7,7 @@
             "type": "string",
             "title": "Reviews",
             "description": "Every review fetched in this run, one item per review.",
-            "template": "{{links.apiDefaultDatasetUrl}}/items?clean=true"
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
         }
     }
 }
