@@ -1,0 +1,128 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "type": "object",
+        "properties": {
+            "store": {
+                "type": "string",
+                "title": "Store",
+                "description": "Which store the review came from: appstore or googleplay.",
+                "example": "appstore"
+            },
+            "appId": {
+                "type": "string",
+                "title": "App ID",
+                "description": "Numeric App Store ID or Google Play package name.",
+                "example": "443904275"
+            },
+            "country": {
+                "type": "string",
+                "title": "Country",
+                "description": "Two-letter country code of the store front.",
+                "example": "jp"
+            },
+            "lang": {
+                "type": ["string", "null"],
+                "title": "Language",
+                "description": "Language code of the review (Google Play only).",
+                "example": "ja"
+            },
+            "reviewId": {
+                "type": "string",
+                "title": "Review ID",
+                "description": "Stable identifier of the review within its store.",
+                "example": "14432676480"
+            },
+            "userName": {
+                "type": ["string", "null"],
+                "title": "User name",
+                "description": "Display name of the reviewer.",
+                "example": "Saku.14"
+            },
+            "rating": {
+                "type": ["integer", "null"],
+                "title": "Rating",
+                "description": "Star rating from 1 to 5.",
+                "example": 1
+            },
+            "title": {
+                "type": ["string", "null"],
+                "title": "Title",
+                "description": "Review title (App Store only; null on Google Play).",
+                "example": "Crashes on launch"
+            },
+            "text": {
+                "type": ["string", "null"],
+                "title": "Text",
+                "description": "Body of the review.",
+                "example": "The app crashes every time I open the camera tab."
+            },
+            "appVersion": {
+                "type": ["string", "null"],
+                "title": "App version",
+                "description": "App version the review refers to, when the store exposes it.",
+                "example": "26.12.1"
+            },
+            "date": {
+                "type": ["string", "null"],
+                "title": "Date",
+                "description": "When the review was posted, in ISO 8601.",
+                "example": "2026-08-15T16:44:28-07:00"
+            },
+            "thumbsUp": {
+                "type": ["integer", "null"],
+                "title": "Thumbs up",
+                "description": "Helpful votes the review received (Google Play only).",
+                "example": 12
+            },
+            "replyText": {
+                "type": ["string", "null"],
+                "title": "Developer reply",
+                "description": "Developer response to the review, when present.",
+                "example": "Sorry about that - please contact support@example.com."
+            }
+        },
+        "required": ["store", "appId", "reviewId"]
+    },
+    "views": {
+        "overview": {
+            "title": "Reviews",
+            "description": "All reviews fetched from both stores.",
+            "transformation": {
+                "fields": [
+                    "store",
+                    "appId",
+                    "country",
+                    "rating",
+                    "date",
+                    "userName",
+                    "title",
+                    "text",
+                    "appVersion",
+                    "thumbsUp",
+                    "replyText",
+                    "reviewId",
+                    "lang"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "store": { "label": "Store", "format": "text" },
+                    "appId": { "label": "App", "format": "text" },
+                    "country": { "label": "Country", "format": "text" },
+                    "rating": { "label": "Rating", "format": "number" },
+                    "date": { "label": "Date", "format": "date" },
+                    "userName": { "label": "User", "format": "text" },
+                    "title": { "label": "Title", "format": "text" },
+                    "text": { "label": "Review", "format": "text" },
+                    "appVersion": { "label": "App version", "format": "text" },
+                    "thumbsUp": { "label": "Thumbs up", "format": "number" },
+                    "replyText": { "label": "Developer reply", "format": "text" },
+                    "reviewId": { "label": "Review ID", "format": "text" },
+                    "lang": { "label": "Language", "format": "text" }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "App reviews",
+    "description": "Reviews collected from the Apple App Store and Google Play.",
+    "properties": {
+        "reviews": {
+            "type": "string",
+            "title": "Reviews",
+            "description": "Every review fetched in this run, one item per review.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items?clean=true"
+        }
+    }
+}
