@@ -1,0 +1,13 @@
+{
+    "actorSpecification": 1,
+    "name": "app-review-monitor",
+    "title": "App Review Monitor — App Store & Google Play",
+    "description": "Fetch and monitor app reviews from Apple App Store and Google Play in one run. Normalized output, incremental monitoring with sinceDate, any country and language.",
+    "version": "0.1",
+    "buildTag": "latest",
+    "input": "./input_schema.json",
+    "meta": {
+        "templateId": "python-start"
+    },
+    "dockerfile": "../Dockerfile"
+}

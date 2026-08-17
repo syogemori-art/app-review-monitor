@@ -1,0 +1,2 @@
+apify<3.0
+requests
