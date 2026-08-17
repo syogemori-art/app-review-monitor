@@ -1,2 +1,5 @@
 apify<3.0
+# crawlee 0.6.x (apify 2.x が依存) は pydantic 2.12+ の default/default_factory 検査で
+# import 時に TypeError になる（apify/crawlee-python#1464）。2.11 系に固定する。
+pydantic<2.12
 requests
