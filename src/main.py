@@ -89,6 +89,7 @@ async def main():
                 "No apps to fetch. Provide appStoreApps and/or googlePlayApps.")
 
         total = 0
+        empty_targets = []
         for store, app_id, cc in targets:
             Actor.log.info(f"fetching {store}:{app_id} ({cc})")
             try:
@@ -108,5 +109,14 @@ async def main():
                 await Actor.charge(event_name="app-review", count=len(reviews))
             total += len(reviews)
             Actor.log.info(f"{store}:{app_id} -> {len(reviews)}件")
+            if not reviews:
+                empty_targets.append(f"{store}:{app_id}({cc})")
 
+        if empty_targets:
+            # 0件は「新着が無い」だけのこともあるが、ストア側が空を返し続けている場合もある。
+            # 黙って0件を返すと利用者は障害に気づけないので、必ずログに残す（0件なので課金はしない）。
+            Actor.log.warning(
+                "レビューを1件も取得できなかった対象があります: "
+                + ", ".join(empty_targets)
+                + "。sinceDate以降に新着が無いか、ストア側が一時的に空を返している可能性があります。")
         Actor.log.info(f"done: {len(targets)}アプリ / {total}レビュー")

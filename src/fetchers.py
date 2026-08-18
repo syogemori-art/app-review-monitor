@@ -9,12 +9,15 @@
 """
 import json
 import re
+import time
 from datetime import datetime, timezone
 
 import requests
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
+
+EMPTY_RETRIES = 2  # 空応答を引いたときに引き直す回数
 
 FIELDS = ["store", "appId", "country", "lang", "reviewId", "userName", "rating",
           "title", "text", "appVersion", "date", "thumbsUp", "replyText"]
@@ -39,15 +42,26 @@ def appstore_reviews(app_id, country="us", max_pages=10, since=None, session=Non
     for page in range(1, max_pages + 1):
         url = (f"https://itunes.apple.com/{country}/rss/customerreviews/"
                f"id={app_id}/sortby=mostrecent/page={page}/json")
-        r = s.get(url, headers={"User-Agent": UA}, timeout=30)
-        if r.status_code != 200:
-            break
-        try:
-            entries = r.json().get("feed", {}).get("entry", [])
-        except ValueError:
-            break
-        if isinstance(entries, dict):  # 1件だけのときdictで返る
-            entries = [entries]
+        # Appleのフィードは散発的に「HTTP 200・中身が空」を返す（2026-08-18に100件中12件を実測）。
+        # 正体はCDNが空応答をキャッシュしていること：同じURLは待っても空のまま（15秒待ちで0/12件）、
+        # ダミークエリでキャッシュキーを変えると必ず返った（12/12件）。空を鵜呑みにすると
+        # ページ打ち切りでそのアプリが丸ごと欠落するので、キーを変えて引き直す。
+        entries = []
+        for attempt in range(EMPTY_RETRIES + 1):
+            u = url if attempt == 0 else f"{url}?cb={time.time_ns()}"
+            r = s.get(u, headers={"User-Agent": UA}, timeout=30)
+            if r.status_code != 200:
+                entries = []
+                break
+            try:
+                entries = r.json().get("feed", {}).get("entry", [])
+            except ValueError:
+                entries = []
+                break
+            if isinstance(entries, dict):  # 1件だけのときdictで返る
+                entries = [entries]
+            if entries:
+                break
         got, page_dates = 0, []
         for e in entries:
             if "im:rating" not in e:  # フィード先頭にアプリ情報が混ざる形式への防御
