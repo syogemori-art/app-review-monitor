@@ -1,12 +1,13 @@
-# App Review Monitor — App Store & Google Play in one run
+# App Store & Google Play Reviews Scraper API — one run, one schema
 
-Fetch customer reviews for any mobile app from **both Apple App Store and Google Play** with a single Actor. Every review comes out with the **same field set** regardless of store, so the results drop straight into your dashboard, sheet, or LLM prompt — no post-processing.
+Scrape customer reviews for any mobile app from **both the Apple App Store and Google Play** with a single Actor. Every review comes back with the **same field set** whatever the store, so results drop straight into your dashboard, spreadsheet, or LLM prompt — nothing to merge, nothing to re-parse.
 
 ## Why this Actor
 
 - **Two stores, one schema.** Most review scrapers cover a single store. Here you get App Store and Google Play reviews in the same run, with identical field names. Store-specific fields (like Google Play's developer reply) are simply `null` where a store doesn't have them.
 - **Monitoring-friendly.** Set `sinceDays: 1` and schedule the Actor daily: each run keeps only the reviews from the last 24 hours, and you pay only for those. The window moves with every run — no input editing needed.
 - **Any storefront.** Works for the US, Japan, Germany, or any other country, including non-Latin languages (Japanese, Korean, ...).
+- **No silent gaps.** Apple's public feed intermittently answers a *successful* request with an empty page — measured here at 12 out of 100 requests, spread randomly across apps and pages. A scraper that trusts that empty page stops paging early and quietly returns **zero reviews for that app**, with no error to warn you. This Actor detects the empty response, re-requests it with a fresh cache key (verified: 12/12 recovered, while simply waiting recovered 0/12), and logs every target that still ends up with no reviews.
 - **Paste URLs or IDs.** `https://apps.apple.com/jp/app/line/id443904275` and `443904275` both work; same for Google Play package names and URLs.
 
 ## Input example
@@ -66,7 +67,9 @@ Note: store pages display counts of *ratings*, which include ratings without rev
 
 ## Pricing
 
-You are charged per review delivered to the dataset (the `app-review` event) plus a small Actor-start fee — see the Pricing tab for current rates. With `sinceDays` monitoring, a typical daily run delivers only the handful of reviews an app received that day.
+You are charged per review delivered to the dataset (the `app-review` event) plus a small Actor-start fee — see the Pricing tab for the current rates. Compute time is not passed on to you.
+
+At the rates set today that is **$1.00 per 1,000 reviews** ($0.001 each) plus $0.00005 per run, so a daily monitoring run on an app that received 20 new reviews costs about **$0.02**. Runs that return nothing are not charged for reviews.
 
 ## FAQ
 
