@@ -1,8 +1,8 @@
 {
     "actorSpecification": 1,
     "name": "app-review-monitor",
-    "title": "App Review Monitor — App Store & Google Play",
-    "description": "Fetch and monitor app reviews from Apple App Store and Google Play in one run. Normalized output, incremental monitoring with sinceDate, any country and language.",
+    "title": "App Store & Google Play Reviews Scraper API | One Schema",
+    "description": "Scrape Apple App Store and Google Play reviews in one run — both stores return the exact same fields, so there is nothing to merge. Any country and language, incremental with sinceDays for daily monitoring, and you pay only for the reviews actually returned.",
     "version": "0.1",
     "buildTag": "latest",
     "input": "./input_schema.json",
